@@ -5,7 +5,7 @@ namespace ABCRetailers.Models
     public class Customer
     {
         [Display(Name = "Customer ID")]
-        public string Id { get; set; } = string.Empty; // set from Function response
+        public string Id { get; set; } = string.Empty; 
 
         [Required, Display(Name = "First Name")]
         public string Name { get; set; } = string.Empty;

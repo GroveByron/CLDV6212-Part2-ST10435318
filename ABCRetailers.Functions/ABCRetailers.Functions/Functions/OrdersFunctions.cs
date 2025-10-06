@@ -75,7 +75,6 @@ public class OrdersFunctions
         await products.CreateIfNotExistsAsync();
         await customers.CreateIfNotExistsAsync();
 
-        // Validate refs
         ProductEntity product;
         CustomerEntity customer;
 
@@ -94,21 +93,17 @@ public class OrdersFunctions
         if (product.StockAvailable < input.Quantity)
             return HttpJson.Bad(req, $"Insufficient stock. Available: {product.StockAvailable}");
 
-        // Create order object (ID will be used in queue message)
         var orderId = Guid.NewGuid().ToString("N");
         var orderDateUtc = DateTimeOffset.UtcNow;
 
-        // Reduce stock (this is NOT the Orders table, so it's allowed)
         product.StockAvailable -= input.Quantity;
         await products.UpdateEntityAsync(product, product.ETag, TableUpdateMode.Replace);
 
-        // Send queue messages - DO NOT write to Orders table directly
         var queueOrder = new QueueClient(_conn, _queueOrder, new QueueClientOptions { MessageEncoding = QueueMessageEncoding.Base64 });
         var queueStock = new QueueClient(_conn, _queueStock, new QueueClientOptions { MessageEncoding = QueueMessageEncoding.Base64 });
         await queueOrder.CreateIfNotExistsAsync();
         await queueStock.CreateIfNotExistsAsync();
 
-        // Order creation message - queue trigger will write to table
         var orderMsg = new
         {
             Type = "OrderCreated",
@@ -125,7 +120,6 @@ public class OrdersFunctions
         };
         await queueOrder.SendMessageAsync(JsonSerializer.Serialize(orderMsg));
 
-        // Stock update notification
         var stockMsg = new
         {
             Type = "StockUpdated",
@@ -138,7 +132,6 @@ public class OrdersFunctions
         };
         await queueStock.SendMessageAsync(JsonSerializer.Serialize(stockMsg));
 
-        // Return DTO (order will be created by queue trigger)
         var orderDto = new OrderDto(
             Id: orderId,
             CustomerId: input.CustomerId,
@@ -174,7 +167,6 @@ public class OrdersFunctions
             e.Status = input.Status;
             await orders.UpdateEntityAsync(e, e.ETag, TableUpdateMode.Replace);
 
-            // notify
             var queueOrder = new QueueClient(_conn, _queueOrder, new QueueClientOptions { MessageEncoding = QueueMessageEncoding.Base64 });
             await queueOrder.CreateIfNotExistsAsync();
             var statusMsg = new

@@ -3,9 +3,9 @@ using Azure.Storage.Blobs;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Configuration;
-using ABCRetailers.Functions.Entities;   // ← REQUIRED
-using ABCRetailers.Functions.Helpers;    // ← REQUIRED
-using ABCRetailers.Functions.Models;     // ← REQUIRED
+using ABCRetailers.Functions.Entities;   
+using ABCRetailers.Functions.Helpers;   
+using ABCRetailers.Functions.Models;     
 
 
 
@@ -90,7 +90,6 @@ public class ProductsFunctions
         }
         else
         {
-            // JSON fallback
             var body = await HttpJson.ReadAsync<Dictionary<string, object>>(req) ?? new();
             name = body.TryGetValue("ProductName", out var pn) ? pn?.ToString() ?? "" : "";
             desc = body.TryGetValue("Description", out var d) ? d?.ToString() ?? "" : "";

@@ -26,7 +26,6 @@ public class QueueProcessorFunctions
 
         try
         {
-            // Deserialize the message
             var orderData = JsonSerializer.Deserialize<OrderMessage>(message);
 
             if (orderData == null)
@@ -35,7 +34,6 @@ public class QueueProcessorFunctions
                 return;
             }
 
-            // Only process OrderCreated messages (write to table)
             if (orderData.Type == "OrderCreated")
             {
                 var conn = _config["STORAGE_CONNECTION"] ?? throw new InvalidOperationException("STORAGE_CONNECTION missing");
@@ -44,7 +42,6 @@ public class QueueProcessorFunctions
                 var table = new TableClient(conn, ordersTable);
                 await table.CreateIfNotExistsAsync();
 
-                // Create the order entity
                 var order = new OrderEntity
                 {
                     RowKey = orderData.OrderId,
@@ -57,20 +54,18 @@ public class QueueProcessorFunctions
                     Status = orderData.Status
                 };
 
-                // Write to Orders table via queue trigger
                 await table.AddEntityAsync(order);
                 log.LogInformation($"Order {order.RowKey} successfully written to Orders table via queue trigger");
             }
             else if (orderData.Type == "OrderStatusUpdated")
             {
                 log.LogInformation($"Order status updated: {orderData.OrderId} -> {orderData.NewStatus}");
-                // Optional: Send email notification, update external systems, etc.
             }
         }
         catch (Exception ex)
         {
             log.LogError(ex, "Error processing order notification");
-            throw; // Re-throw to trigger poison queue handling
+            throw; 
         }
     }
 
@@ -82,7 +77,6 @@ public class QueueProcessorFunctions
         var log = ctx.GetLogger("StockUpdates_Processor");
         log.LogInformation($"StockUpdates message: {message}");
 
-        // Optional: Sync to reporting DB, send inventory alerts, etc.
         try
         {
             var stockData = JsonSerializer.Deserialize<StockMessage>(message);
@@ -97,7 +91,6 @@ public class QueueProcessorFunctions
         }
     }
 
-    // Message DTOs for deserialization
     private record OrderMessage(
         string Type,
         string OrderId,

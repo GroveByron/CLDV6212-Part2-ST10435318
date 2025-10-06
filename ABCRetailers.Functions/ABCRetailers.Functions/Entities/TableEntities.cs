@@ -26,7 +26,7 @@ public class ProductEntity : ITableEntity
 
     public string ProductName { get; set; } = "";
     public string Description { get; set; } = "";
-    public double Price { get; set; }   // stored as double in Table
+    public double Price { get; set; }   
     public int StockAvailable { get; set; }
     public string ImageUrl { get; set; } = "";
 }
@@ -42,7 +42,7 @@ public class OrderEntity : ITableEntity
     public string ProductId { get; set; } = "";
     public string ProductName { get; set; } = "";
     public int Quantity { get; set; }
-    public double UnitPrice { get; set; } // stored as double
+    public double UnitPrice { get; set; } 
     public DateTimeOffset OrderDateUtc { get; set; } = DateTimeOffset.UtcNow;
     public string Status { get; set; } = "Submitted";
 }

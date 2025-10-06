@@ -1,6 +1,6 @@
 ﻿using ABCRetailers.Models;
 using ABCRetailers.Models.ViewModels;
-using ABCRetailers.Services;           // IFunctionsApi
+using ABCRetailers.Services;           
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -22,7 +22,6 @@ namespace ABCRetailers.Controllers
         {
             try
             {
-                // Pull all three sets in parallel (simple + fine for small datasets)
                 var productsTask = _api.GetProductsAsync();
                 var customersTask = _api.GetCustomersAsync();
                 var ordersTask = _api.GetOrdersAsync();
@@ -47,7 +46,6 @@ namespace ABCRetailers.Controllers
             {
                 _logger.LogError(ex, "Failed to load dashboard data from Functions API.");
                 TempData["Error"] = "Could not load dashboard data. Please try again.";
-                // Show an empty but valid model so the view renders
                 return View(new HomeViewModel());
             }
         }

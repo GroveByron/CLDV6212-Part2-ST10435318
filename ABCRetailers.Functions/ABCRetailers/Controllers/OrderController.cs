@@ -10,14 +10,12 @@ namespace ABCRetailers.Controllers
         private readonly IFunctionsApi _api;
         public OrderController(IFunctionsApi api) => _api = api;
 
-        // LIST
         public async Task<IActionResult> Index()
         {
             var orders = await _api.GetOrdersAsync();
             return View(orders.OrderByDescending(o => o.OrderDateUtc).ToList());
         }
 
-        // CREATE (GET)
         public async Task<IActionResult> Create()
         {
             var customers = await _api.GetCustomersAsync();
@@ -31,7 +29,6 @@ namespace ABCRetailers.Controllers
             return View(vm);
         }
 
-        // CREATE (POST)
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OrderCreateViewModel model)
         {
@@ -43,7 +40,6 @@ namespace ABCRetailers.Controllers
 
             try
             {
-                // Validate references
                 var customer = await _api.GetCustomerAsync(model.CustomerId);
                 var product = await _api.GetProductAsync(model.ProductId);
 
@@ -61,10 +57,8 @@ namespace ABCRetailers.Controllers
                     return View(model);
                 }
 
-                // Create order (sends to queue, returns DTO immediately)
                 var orderDto = await _api.CreateOrderAsync(model.CustomerId, model.ProductId, model.Quantity);
 
-                // Wait for queue to process and write to table
                 var orderCreated = await WaitForOrderCreation(orderDto.Id, maxAttempts: 20, delayMs: 500);
 
                 if (orderCreated)
@@ -86,7 +80,6 @@ namespace ABCRetailers.Controllers
             }
         }
 
-        // DETAILS
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrWhiteSpace(id)) return NotFound();
@@ -94,7 +87,6 @@ namespace ABCRetailers.Controllers
             return order is null ? NotFound() : View(order);
         }
 
-        // EDIT (GET)
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrWhiteSpace(id)) return NotFound();
@@ -102,7 +94,6 @@ namespace ABCRetailers.Controllers
             return order is null ? NotFound() : View(order);
         }
 
-        // EDIT (POST)
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Order posted)
         {
@@ -121,7 +112,6 @@ namespace ABCRetailers.Controllers
             }
         }
 
-        // DELETE
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -137,7 +127,6 @@ namespace ABCRetailers.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // AJAX: price/stock lookup
         [HttpGet]
         public async Task<JsonResult> GetProductPrice(string productId)
         {
@@ -162,7 +151,6 @@ namespace ABCRetailers.Controllers
             }
         }
 
-        // AJAX: status update
         [HttpPost]
         public async Task<IActionResult> UpdateOrderStatus(string id, string newStatus)
         {
@@ -177,7 +165,6 @@ namespace ABCRetailers.Controllers
             }
         }
 
-        // AJAX: Check if order exists (for polling)
         [HttpGet]
         public async Task<JsonResult> CheckOrderExists(string id)
         {
@@ -198,9 +185,6 @@ namespace ABCRetailers.Controllers
             model.Products = await _api.GetProductsAsync();
         }
 
-        /// <summary>
-        /// Polls the API to check if the order has been created by the queue trigger
-        /// </summary>
         private async Task<bool> WaitForOrderCreation(string orderId, int maxAttempts = 20, int delayMs = 500)
         {
             for (int i = 0; i < maxAttempts; i++)
@@ -212,16 +196,16 @@ namespace ABCRetailers.Controllers
                     var order = await _api.GetOrderAsync(orderId);
                     if (order is not null)
                     {
-                        return true; // Order found in table
+                        return true; 
                     }
                 }
                 catch
                 {
-                    // Order not found yet, continue polling
+                    
                 }
             }
 
-            return false; // Timeout - order not found within expected time
+            return false; 
         }
     }
 }

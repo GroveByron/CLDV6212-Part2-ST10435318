@@ -1,5 +1,4 @@
-﻿// Models/ViewModels/HomeViewModel.cs
-namespace ABCRetailers.Models.ViewModels
+﻿namespace ABCRetailers.Models.ViewModels
 {
     public class HomeViewModel
     {

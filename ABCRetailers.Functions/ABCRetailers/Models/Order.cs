@@ -1,6 +1,4 @@
-﻿
-// Models/Order.cs
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ABCRetailers.Models
 {
@@ -15,7 +13,7 @@ namespace ABCRetailers.Models
     public class Order
     {
         [Display(Name = "Order ID")]
-        public string Id { get; set; } = string.Empty; // set from Function response
+        public string Id { get; set; } = string.Empty;
 
         [Required, Display(Name = "Customer")]
         public string CustomerId { get; set; } = string.Empty;
@@ -29,7 +27,6 @@ namespace ABCRetailers.Models
         [Display(Name = "Product Name")]
         public string ProductName { get; set; } = string.Empty;
 
-        // set by Function (server truth)
         [Display(Name = "Order Placed (UTC)")]
         public DateTimeOffset? OrderDateUtc { get; set; }
 

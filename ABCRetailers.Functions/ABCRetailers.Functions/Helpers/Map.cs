@@ -5,7 +5,6 @@ namespace ABCRetailers.Functions.Helpers;
 
 public static class Map
 {
-    // Table Entity  ->  DTOs returned to MVC
 
     public static CustomerDto ToDto(CustomerEntity e)
         => new(
@@ -22,14 +21,14 @@ public static class Map
             Id: e.RowKey,
             ProductName: e.ProductName,
             Description: e.Description,
-            Price: (decimal)e.Price,                 // stored as double in Table, cast to decimal for MVC
+            Price: (decimal)e.Price,                
             StockAvailable: e.StockAvailable,
             ImageUrl: e.ImageUrl
         );
 
     public static OrderDto ToDto(OrderEntity e)
     {
-        var unitPrice = (decimal)e.UnitPrice;       // double -> decimal for money in MVC
+        var unitPrice = (decimal)e.UnitPrice;      
         var total = unitPrice * e.Quantity;
 
         return new OrderDto(

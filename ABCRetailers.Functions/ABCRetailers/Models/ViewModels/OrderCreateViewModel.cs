@@ -1,5 +1,4 @@
-﻿// Models/ViewModels/OrderCreateViewModel.cs
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ABCRetailers.Models.ViewModels
 {

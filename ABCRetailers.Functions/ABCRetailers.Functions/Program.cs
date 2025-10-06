@@ -12,7 +12,6 @@ var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices((ctx, services) =>
     {
-        // Register IConfiguration for dependency injection in functions
         services.AddSingleton(ctx.Configuration);
     })
     .Build();

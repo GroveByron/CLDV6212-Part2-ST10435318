@@ -20,7 +20,6 @@ public class FunctionsApiClient : IFunctionsApi
         _http = factory.CreateClient("Functions");
     }
 
-    // ---------- Helpers ----------
     private static HttpContent JsonBody(object obj)
         => new StringContent(JsonSerializer.Serialize(obj, _json), Encoding.UTF8, "application/json");
 
@@ -32,7 +31,6 @@ public class FunctionsApiClient : IFunctionsApi
         return data!;
     }
 
-    // ---------- Customers ----------
     public async Task<List<Customer>> GetCustomersAsync()
         => await ReadJsonAsync<List<Customer>>(await _http.GetAsync(CustomersRoute));
 
@@ -66,7 +64,6 @@ public class FunctionsApiClient : IFunctionsApi
     public async Task DeleteCustomerAsync(string id)
         => (await _http.DeleteAsync($"{CustomersRoute}/{id}")).EnsureSuccessStatusCode();
 
-    // ---------- Products ----------
     public async Task<List<Product>> GetProductsAsync()
         => await ReadJsonAsync<List<Product>>(await _http.GetAsync(ProductsRoute));
 
@@ -114,7 +111,6 @@ public class FunctionsApiClient : IFunctionsApi
     public async Task DeleteProductAsync(string id)
         => (await _http.DeleteAsync($"{ProductsRoute}/{id}")).EnsureSuccessStatusCode();
 
-    // ---------- Orders ----------
     public async Task<List<Order>> GetOrdersAsync()
     {
         var dtos = await ReadJsonAsync<List<OrderDto>>(await _http.GetAsync(OrdersRoute));
@@ -132,7 +128,7 @@ public class FunctionsApiClient : IFunctionsApi
         }
         catch
         {
-            return null; // Handle 404 or other errors gracefully
+            return null; 
         }
     }
 
@@ -152,7 +148,6 @@ public class FunctionsApiClient : IFunctionsApi
     public async Task DeleteOrderAsync(string id)
         => (await _http.DeleteAsync($"{OrdersRoute}/{id}")).EnsureSuccessStatusCode();
 
-    // ---------- Uploads ----------
     public async Task<string> UploadProofOfPaymentAsync(IFormFile file, string? orderId, string? customerName)
     {
         using var form = new MultipartFormDataContent();
@@ -169,7 +164,6 @@ public class FunctionsApiClient : IFunctionsApi
         return doc.TryGetValue("fileName", out var name) ? name : file.FileName;
     }
 
-    // ---------- Mapping ----------
     private static Order ToOrder(OrderDto d)
     {
         var status = Enum.TryParse<OrderStatus>(d.Status, ignoreCase: true, out var s)

@@ -37,14 +37,12 @@ public class UploadsFunctions
         var orderId = form.Text.GetValueOrDefault("OrderId");
         var customerName = form.Text.GetValueOrDefault("CustomerName");
 
-        // Blob
         var container = new BlobContainerClient(_conn, _proofs);
         await container.CreateIfNotExistsAsync();
         var blobName = $"{Guid.NewGuid():N}-{file.FileName}";
         var blob = container.GetBlobClient(blobName);
         await using (var s = file.Data) await blob.UploadAsync(s);
 
-        // Azure Files
         var share = new ShareClient(_conn, _share);
         await share.CreateIfNotExistsAsync();
         var root = share.GetRootDirectoryClient();
