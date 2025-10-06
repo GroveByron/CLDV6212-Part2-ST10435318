@@ -1,0 +1,131 @@
+﻿@model IEnumerable<ABCRetailers.Models.Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <h2 class="fw-bold text-primary mb-0">
+            <i class="fas fa-users me-2"></i> Customers
+        </h2>
+
+        <div class="d-flex align-items-center gap-2">
+            <form asp-action="Index" method="get" class="d-flex align-items-center" style="max-width: 300px;">
+                <input type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       class="form-control rounded-pill px-3 shadow-sm"
+                       placeholder="Search customers..." />
+                <button type="submit" class="btn btn-primary rounded-pill ms-2 shadow-sm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <a asp-action="Create" class="btn btn-success rounded-pill shadow-sm ms-2">
+                <i class="fas fa-plus me-1"></i> Add Customer
+            </a>
+        </div>
+    </div>
+
+    <!-- Table or Empty State -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="table-light border-bottom">
+                            <tr class="text-secondary text-uppercase small">
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Shipping Address</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var customer in Model)
+                            {
+                                <tr>
+                                    <td class="text-muted">
+                                        <code>
+                                            @(string.IsNullOrEmpty(customer?.Id)
+                                                                                ? "-"
+                                                                                : customer.Id.Substring(0, Math.Min(8, customer.Id.Length)) + "…")
+                                </code>
+                            </td>
+                            <td>@customer.Name</td>
+                            <td>@customer.Surname</td>
+                            <td>@customer.Username</td>
+                            <td>@customer.Email</td>
+                            <td>@customer.ShippingAddress</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-id="@customer.Id"
+                                       class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                            onclick="confirmDelete('@customer.Id', '@(customer.Name + " " + customer.Surname)')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-light border shadow-sm text-center py-5">
+            <i class="fas fa-info-circle fa-2x text-secondary mb-3"></i>
+            <p class="lead mb-2">No customers found.</p>
+            <p>
+                <a asp-action="Create" class="btn btn-success rounded-pill shadow-sm">
+                    <i class="fas fa-plus"></i> Add your first customer
+                </a>
+            </p>
+        </div>
+    }
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-3">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="customerName"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger rounded-pill">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(customerId, customerName) {
+            document.getElementById('customerName').textContent = customerName;
+            document.getElementById('deleteForm').action =
+                '@Url.Action("Delete", "Customer")/' + encodeURIComponent(customerId);
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+}
