@@ -25,7 +25,7 @@ builder.Services.AddLogging();
 
 var app = builder.Build();
 
-var culture = new CultureInfo("en-ZA");
+var culture = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 

@@ -6005,11 +6005,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lab_services_student\\Desktop\\CLDV6212-Part2-ST10435318\\ABCRetailers.Functions\\ABCRetailers\\ABCRetailers.csproj",
+      "projectUniqueName": "C:\\Users\\lab_services_student\\Desktop\\ABCRetailers.Functions\\ABCRetailers\\ABCRetailers.csproj",
       "projectName": "ABCRetailers",
-      "projectPath": "C:\\Users\\lab_services_student\\Desktop\\CLDV6212-Part2-ST10435318\\ABCRetailers.Functions\\ABCRetailers\\ABCRetailers.csproj",
+      "projectPath": "C:\\Users\\lab_services_student\\Desktop\\ABCRetailers.Functions\\ABCRetailers\\ABCRetailers.csproj",
       "packagesPath": "C:\\Users\\lab_services_student\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lab_services_student\\Desktop\\CLDV6212-Part2-ST10435318\\ABCRetailers.Functions\\ABCRetailers\\obj\\",
+      "outputPath": "C:\\Users\\lab_services_student\\Desktop\\ABCRetailers.Functions\\ABCRetailers\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
